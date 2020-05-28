@@ -19,10 +19,12 @@ class Callback(object):
             optionally include `val_loss`
             (if validation is enabled in `fit`), and `val_acc`
             (if validation and accuracy monitoring are enabled).
-        on_batch_begin: logs include `size`,
+        on_(train/predict/test)_batch_begin: logs include `size`,
             the number of samples in the current batch.
-        on_batch_end: logs include `loss`, and optionally `acc`
-            (if accuracy monitoring is enabled).
+        on_(train/predict/test)_batch_end: logs include `loss`, and optionally
+            `acc` (if accuracy monitoring is enabled).
+    For other methods, currently no data is passed in logs but that may change
+    in the future.
     """
 
     def __init__(self):
@@ -42,15 +44,47 @@ class Callback(object):
         pass
 
     def on_batch_begin(self, batch, logs=None):
-        pass
+        """Backwards compatibility alias for `on_train_batch_begin`."""
+        return self.on_train_batch_begin(batch, logs)
 
     def on_batch_end(self, batch, logs=None):
+        """Backwards compatibility alias for `on_train_batch_end`."""
+        return self.on_train_batch_end(batch, logs)
+
+    def on_train_batch_begin(self, batch, logs=None):
+        pass
+
+    def on_train_batch_end(self, batch, logs=None):
+        pass
+
+    def on_test_batch_begin(self, batch, logs=None):
+        pass
+
+    def on_test_batch_end(self, batch, logs=None):
+        pass
+
+    def on_predict_batch_begin(self, batch, logs=None):
+        pass
+
+    def on_predict_batch_end(self, batch, logs=None):
         pass
 
     def on_train_begin(self, logs=None):
         pass
 
     def on_train_end(self, logs=None):
+        pass
+
+    def on_test_begin(self, logs=None):
+        pass
+
+    def on_test_end(self, logs=None):
+        pass
+
+    def on_predict_begin(self, logs=None):
+        pass
+
+    def on_predict_end(self, logs=None):
         pass
 
 
@@ -67,7 +101,7 @@ class BatchHistory(Callback):
         batch_history = self.history.setdefault('batches', [])
         batch_history.append({})
 
-    def on_batch_end(self, batch, logs=None):
+    def on_train_batch_end(self, batch, logs=None):
         batch_history = self.history['batches'][-1]
         for k, v in logs.items():
             batch_history.setdefault(k, []).append(v)

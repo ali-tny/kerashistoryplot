@@ -22,3 +22,5 @@ pytest-cov = '*'
 pytest-benchmark = '*'
 glob2 = '*'
 twine = "*"
+matplotlib.pyplot = "*"
+ipython = "*"
